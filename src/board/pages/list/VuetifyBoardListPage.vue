@@ -2,7 +2,7 @@
   <v-container>
     <h2>안녕 Vue3 TypeScript 기반 Board App이야</h2>
     <div style="text-align: left; margin: 15px;">
-      <router-link :to="{ name: 'VuetifyBoardRegister' }">
+      <router-link :to="{ name: 'VuetifyBoardRegisterPage' }">
         게시물 작성
       </router-link>
     </div>
@@ -46,11 +46,13 @@ export default {
   methods: {
     ...mapActions(boardModule, ['requestBoardListToSpring']),
     readRow (event, { item }) {
-      const selectedRowBoardId = item.selectable.boardId
+      // console.log('item: ', item)
+      // console.log('item.target: ', item['boardId'])
+      // const selectedRowBoardId = item.selectable.boardId
 
       this.$router.push({
         name: 'VuetifyBoardReadPage',
-        params: { boardId: selectedRowBoardId.toString() }
+        params: { boardId: item['boardId'].toString() }
       })
     }
   },

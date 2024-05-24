@@ -30,7 +30,7 @@
               <v-btn color="primary" @click="onModify">수정완료</v-btn>
             </v-col>
             <v-col cols="auto">
-              <router-link :to="{ name: 'VuetifyBoardList' }">
+              <router-link :to="{ name: 'VuetifyBoardListPage' }">
                 <v-btn color="secondary">돌아가기</v-btn>
               </router-link>
             </v-col>

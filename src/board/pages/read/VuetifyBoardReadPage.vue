@@ -22,7 +22,7 @@
           </v-row>
           <v-row justify="end">
             <v-col cols="auto">
-              <router-link :to="{ name: 'VuetifyBoardModify', params: { boardId }}">
+              <router-link :to="{ name: 'VuetifyBoardModifyPage', params: { boardId }}">
                 <v-btn color="primary">수정하기</v-btn>
               </router-link>
             </v-col>
@@ -30,7 +30,7 @@
               <v-btn color="error" @click="onDelete">삭제</v-btn>
             </v-col>
             <v-col cols="auto">
-              <router-link :to="{ name: 'VuetifyBoardList' }">
+              <router-link :to="{ name: 'VuetifyBoardListPage' }">
                 <v-btn color="secondary">돌아가기</v-btn>
               </router-link>
             </v-col>

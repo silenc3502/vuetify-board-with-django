@@ -10,18 +10,14 @@ import {
 export type ProductActions = {
     requestProductToSpring(context: ActionContext<ProductState, any>, productId: number): Promise<void>;
     requestProductListToSpring(context: ActionContext<ProductState, any>): Promise<void>;
-    requestCreateProductToSpring(context: ActionContext<ProductState, any>, payload: {
-        name: string,
-        description: string,
-        price: number,
-        imageName: string
-    }): Promise<void>;
+    requestCreateProductToSpring(context: ActionContext<ProductState, any>, formData: FormData): Promise<AxiosResponse>;
 };
 
 const actions: ProductActions = {
     async requestProductToSpring(context: ActionContext<ProductState, any>, productId: number): Promise<void> {
         try {
             const res: AxiosResponse<Product> = await axiosInst.djangoAxiosInst.get(`/product/read/${productId}`);
+            console.log('res:', res)
             context.commit(REQUEST_PRODUCT_TO_SPRING, res.data);
         } catch (error) {
             console.error('requestProductToSpring(): ' + error);
@@ -31,27 +27,23 @@ const actions: ProductActions = {
     async requestProductListToSpring(context: ActionContext<ProductState, any>): Promise<void> {
         try {
             const res: AxiosResponse<Product[]> = await axiosInst.djangoAxiosInst.get('/product/list');
+            console.log('res:', res)
             context.commit(REQUEST_PRODUCT_LIST_TO_SPRING, res.data);
         } catch (error) {
             console.error('requestProductListToSpring(): ' + error);
             throw error;
         }
     },
-    async requestCreateProductToSpring(context: ActionContext<ProductState, any>, payload: {
-        name: string,
-        description: string,
-        price: number,
-        imageName: string
-    }): Promise<void> {
+    async requestCreateProductToSpring(context: ActionContext<ProductState, any>, formData: FormData): Promise<AxiosResponse> {
         try {
-            const { name, description, price, imageName } = payload;
-            const res: AxiosResponse = await axiosInst.djangoAxiosInst.post('/product/register/', {
-                name,
-                description,
-                price,
-                image_name: imageName // Django 모델의 필드명과 일치해야 함
+            console.log('requestCreateProductToSpring()', formData);
+            const res: AxiosResponse = await axiosInst.djangoAxiosInst.post('/product/register/', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             });
             console.log('응답 데이터:', res.data);
+            return res; // 응답 반환
         } catch (error) {
             console.error('requestCreateProductToSpring(): ' + error);
             throw error;

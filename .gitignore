@@ -24,3 +24,8 @@ pnpm-debug.log*
 
 # exclude .env
 *.env
+
+# exclude images
+*.jpeg
+*.jpg
+*.png

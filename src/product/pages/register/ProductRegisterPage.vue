@@ -17,7 +17,12 @@
     </v-row>
     <v-row>
       <v-col cols="12">
-        <v-text-field v-model="imageName" label="이미지"/>
+        <v-file-input v-model="image" label="이미지 파일" prepend-icon="mdi-camera"/>
+      </v-col>
+    </v-row>
+    <v-row>
+      <v-col cols="12">
+        <p v-if="uploadedFileName">업로드된 파일: {{ uploadedFileName }}</p>
       </v-col>
     </v-row>
     <v-row>
@@ -38,30 +43,31 @@ export default {
     data() {
         return {
             name: '',
-            description: '',
             price: 0,
-            imagePath: '',
+            description: '',
+            image: null,
+            uploadedFileName: '', // 추가된 상태
         };
     },
     methods: {
         ...mapActions(productModule, ['requestCreateProductToSpring']),
         async onSubmit() {
-            const payload = {
-                name: this.name,
-                description: this.description,
-                price: this.price,
-                imagePath: this.imagePath,
-            };
-
             try {
-                const product = await this.requestCreateProductToSpring(payload);
-                await this.$router.push({
-                    name: 'ProductReadPage',
-                    params: { productId: product.productId.toString() },
-                });
+                if (this.image) {
+                    const formData = new FormData();
+                    formData.append('name', this.name);
+                    formData.append('price', this.price);
+                    formData.append('description', this.description);
+                    formData.append('image', this.image);
+
+                    const response = await this.requestCreateProductToSpring(formData);
+                    this.uploadedFileName = response.data.imageName;
+                    this.$router.push({ name: 'ProductListPage' });
+                } else {
+                    alert('이미지 파일을 선택해 주세요.');
+                }
             } catch (error) {
-                console.error('Error creating product:', error);
-                alert('상품 등록에 실패했습니다.');
+                console.error('Error registering product:', error);
             }
         },
         onCancel() {

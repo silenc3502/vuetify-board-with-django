@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import HomeView from '../home/pages/HomeView.vue'
 import BoardRoutes from "@/board/router/BoardRoutes";
 import ProductRoutes from "@/product/router/ProductRoutes";
+import AccountRoutes from "@/account/router/AccountRoutes";
+import AuthRoutes from "@/authentication/router/AuthRoutes";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -11,6 +13,8 @@ const routes: Array<RouteRecordRaw> = [
   },
   ...BoardRoutes,
   ...ProductRoutes,
+  ...AccountRoutes,
+  ...AuthRoutes,
 ]
 
 const router = createRouter({

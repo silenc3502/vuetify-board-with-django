@@ -74,7 +74,7 @@ export default {
             router.push('/my-page');
         },
         signIn() {
-            router.push('/sign-in');
+            router.push('/account/login');
         },
         signOut() {
             localStorage.removeItem("userToken");

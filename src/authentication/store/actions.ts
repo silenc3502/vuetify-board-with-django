@@ -9,6 +9,7 @@ import { AxiosResponse } from 'axios';
 export type AuthActions = {
     requestGithubLoginToDjango(context: ActionContext<AuthState, any>): Promise<any>;
     getAccessTokenFromDjangoRedirection(context: ActionContext<AuthState, any>, payload: { code: string }): Promise<void>;
+    requestUserInfoToDjango(context: ActionContext<AuthState, any>, accessToken: string): Promise<void>;
 }
 
 const actions: ActionTree<AuthState, any> & AuthActions = {
@@ -26,11 +27,23 @@ const actions: ActionTree<AuthState, any> & AuthActions = {
         const { code } = payload;
 
         try {
-            const response: AxiosResponse<any> = await axiosInst.djangoAxiosInst.get(`/authentication/github/oauth-code?code=${code}`);
-            localStorage.setItem("userToken", response.data);
+            console.log('getAccessTokenFromDjangoRedirection() -> code:', code);
+            const response: AxiosResponse<any> = await axiosInst.djangoAxiosInst.post('/oauth/kakao/oauth-code', { code });
+            console.log('getAccessTokenFromDjangoRedirection() -> accessToken:', response.data.access_token.access_token);
+            localStorage.setItem("accessToken", response.data.access_token.access_token);
             context.commit(KAKAO_LOGIN_COMPLETE, true);
         } catch (error) {
             alert('문제 발생!');
+            throw error;
+        }
+    },
+
+    async requestUserInfoToDjango(context: ActionContext<AuthState, any>, accessToken: string): Promise<void> {
+        try {
+            const userInfoResponse: AxiosResponse<any> = await axiosInst.djangoAxiosInst.post('/oauth/kakao/user-info', { access_token: accessToken });
+            console.log('User Info:', userInfoResponse.data.user_info);
+        } catch (error) {
+            alert('사용자 정보 가져오기 실패!');
             throw error;
         }
     }

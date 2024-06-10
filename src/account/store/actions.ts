@@ -5,6 +5,7 @@ import {
     SET_ACCOUNT,
     SET_LOGGED_IN,
 } from './mutations-types';
+import {AuthState} from "@/authentication/store/states";
 
 export interface AccountActions extends ActionTree<any, any> {
     requestAccountInfoToDjango(context: ActionContext<any, any>): Promise<void>;
@@ -13,11 +14,7 @@ export interface AccountActions extends ActionTree<any, any> {
     requestExistUserInfoKakaoToDjango(context: ActionContext<any, any>): Promise<void>;
     requestUserInfoKakaoToDjango(context: ActionContext<any, any>, payload: any): Promise<void>;
     requestCheckKaKaoEmailToDjango(checkPayload: any): Promise<boolean>;
-    requestCheckNicknameToDjango(payload: any): Promise<boolean>;
-    requestChangeNicknameToDjango(payload: any): Promise<void>;
-    requestChangeProfileImageToDjango(payload: any): Promise<void>;
-    requestWithdrawAccountToDjango(context: ActionContext<any, any>): Promise<void>;
-    requestAdminLoginToDjango(context: ActionContext<any, any>, payload: any): Promise<boolean>;
+    requestCheckNicknameToDjango(context: ActionContext<any, any>, payload: any): Promise<boolean>;
 }
 
 const actions: AccountActions = {
@@ -86,13 +83,14 @@ const actions: AccountActions = {
             });
     },
 
-    async requestCheckNicknameToDjango(payload) {
+    async requestCheckNicknameToDjango(context: ActionContext<any, any>, payload) {
         const { newNickname } = payload;
-        const isValidNickname = /^[가-힣a-zA-Z0-9]{2,6}$/.test(newNickname);
+        const isValidNickname = /^[가-힣a-zA-Z0-9]{2,10}$/.test(newNickname);
 
         if (isValidNickname) {
+            console.log('requestCheckNicknameToDjango() nickname 유효함');
             return axiosInst.djangoAxiosInst
-                .get(`/account/check-nickName/${newNickname}`)
+                .post(`/account/check-nickname`, { nickname: newNickname }) // 수정: 닉네임을 POST 요청으로 전달
                 .then((res) => {
                     if (res.data) {
                         alert('사용 가능한 닉네임입니다!');
@@ -108,63 +106,6 @@ const actions: AccountActions = {
         }
     },
 
-    async requestChangeNicknameToDjango(payload) {
-        const userToken = localStorage.getItem('userToken');
-        const { newNickname } = payload;
-
-        return axiosInst.djangoAxiosInst
-            .get(
-                `/account/change-nickname?userToken=${userToken}&nickname=${newNickname}`
-            )
-            .then((res) => {
-                console.log(res.data);
-            });
-    },
-
-    async requestChangeProfileImageToDjango(payload) {
-        const userToken = localStorage.getItem('userToken');
-        const { newProfileImageName } = payload;
-
-        return axiosInst.djangoAxiosInst
-            .get('/account/change-profileImage', {
-                headers: { Authorization: userToken },
-                params: { profileImageName: newProfileImageName },
-            })
-            .then((res) => {
-                console.log(res.data);
-            });
-    },
-
-    async requestWithdrawAccountToDjango({ commit }) {
-        const userToken = localStorage.getItem('userToken');
-
-        return axiosInst.djangoAxiosInst
-            .delete('/account/withdraw', { headers: { Authorization: userToken } })
-            .then((res) => {
-                localStorage.removeItem('userToken');
-                commit(SET_LOGGED_IN, false);
-                alert('탈퇴 완료');
-            });
-    },
-
-    async requestAdminLoginToDjango({ commit }, payload) {
-        const { email, password } = payload;
-
-        return axiosInst.djangoAxiosInst
-            .post('/account/login-admin', { email, password })
-            .then((res) => {
-                if (res.data.nickname == null) {
-                    alert('계정 정보를 확인하세요');
-                    return false;
-                } else {
-                    localStorage.setItem('userToken', res.data.userToken);
-                    localStorage.setItem('roleType', res.data.roleType);
-                    localStorage.setItem('nickname', res.data.nickname);
-                    commit(SET_LOGGED_IN, true);
-                    return true;
-                }
-            });
-    },
 };
 
 export default actions;

@@ -27,10 +27,7 @@ export default {
             await this.delay(1000);
         },
         async getUserInfo() {
-            const accessToken = localStorage.getItem("accessToken");
-            console.log('accessToken:', accessToken);
-
-            await this.requestUserInfoToDjango({ accessToken })
+            await this.requestUserInfoToDjango()
             this.$router.push('/');
         }
     },

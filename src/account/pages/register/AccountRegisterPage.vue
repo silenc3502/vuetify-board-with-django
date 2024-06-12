@@ -81,7 +81,7 @@ export default {
     },
     methods: {
         ...mapActions(authenticationModule, ['requestUserInfoToDjango']),
-        ...mapActions(accountModule, ['requestCheckNicknameToDjango']),
+        ...mapActions(accountModule, ['requestCheckNicknameToDjango', 'requestNewAccountToDjango']),
         async requestUserInfo() {
             try {
                 const userInfo = await this.requestUserInfoToDjango();
@@ -111,13 +111,14 @@ export default {
                 this.isNicknameValid = false;
             }
         },
-        submitForm() {
+        async submitForm() {
             if (this.$refs.form.validate()) {
                 const userData = {
                     email: this.email,
                     nickname: this.nickname,
                 };
-                // 여기에 등록 요청을 서버로 보내는 로직을 추가하세요
+
+                await this.requestNewAccountToDjango(userData)
                 console.log('User data submitted:', userData);
             }
         },

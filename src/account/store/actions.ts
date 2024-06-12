@@ -6,36 +6,16 @@ import {
     SET_LOGGED_IN,
 } from './mutations-types';
 import {AuthState} from "@/authentication/store/states";
+import {AxiosResponse} from "axios/index";
 
 export interface AccountActions extends ActionTree<any, any> {
-    requestAccountInfoToDjango(context: ActionContext<any, any>): Promise<void>;
-    requestUserLogoutToDjango(context: ActionContext<any, any>): Promise<void>;
     requestKakaoOauthRedirectUrlToDjango(): Promise<void>;
-    requestExistUserInfoKakaoToDjango(context: ActionContext<any, any>): Promise<void>;
-    requestUserInfoKakaoToDjango(context: ActionContext<any, any>, payload: any): Promise<void>;
-    requestCheckKaKaoEmailToDjango(checkPayload: any): Promise<boolean>;
     requestCheckNicknameToDjango(context: ActionContext<any, any>, payload: any): Promise<boolean>;
+    requestEmailDuplicationCheckToDjango(context: ActionContext<any, any>, email: string): Promise<boolean>
+    requestNewAccountToDjango(context: ActionContext<any, any>, userData: { email: string; nickname: string }): Promise<void>;
 }
 
 const actions: AccountActions = {
-    async requestAccountInfoToDjango({ commit }) {
-        const userToken = localStorage.getItem('userToken');
-        return axiosInst.djangoAxiosInst
-            .get('account/info', { headers: { Authorization: userToken } })
-            .then((res) => {
-                commit(REQUEST_ACCOUNT_TO_SPRING, res.data);
-                console.log(res.data);
-            });
-    },
-
-    async requestUserLogoutToDjango({ commit }) {
-        const userToken = localStorage.getItem('userToken');
-        return axiosInst.djangoAxiosInst
-            .get('/account/logout', { params: { userToken: userToken } })
-            .then(async (res) => {
-                await commit(SET_LOGGED_IN, false);
-            });
-    },
 
     async requestKakaoOauthRedirectUrlToDjango() {
         return axiosInst.djangoAxiosInst.get('/oauth/kakao').then((res) => {
@@ -44,43 +24,17 @@ const actions: AccountActions = {
         });
     },
 
-    async requestExistUserInfoKakaoToDjango({ commit }) {
-        return axiosInst.djangoAxiosInst
-            .get('/oauth/kakao-login')
-            .then(async (res) => {
-                await commit(SET_ACCOUNT, res.data);
-                localStorage.setItem('userToken', res.data.userToken);
-                await commit(SET_LOGGED_IN, true);
-            });
-    },
-
-    async requestUserInfoKakaoToDjango({ commit }, payload) {
-        const { nickname, profileImageName } = payload;
-        const reqForm = {
-            nickname,
-            profileImageName,
-        };
-        console.log(nickname);
-        return axiosInst.djangoAxiosInst
-            .post('/oauth/kakao-new-login', reqForm)
-            .then(async (res) => {
-                await commit(SET_ACCOUNT, res.data);
-                localStorage.setItem('userToken', res.data.userToken);
-                await commit(SET_LOGGED_IN, true);
-            });
-    },
-
-    async requestCheckKaKaoEmailToDjango(checkPayload) {
-        const { code } = checkPayload;
-        return axiosInst.djangoAxiosInst
-            .get('/oauth/kakao-check-exist', { params: { code: code } })
-            .then((res) => {
-                if (res.data) {
-                    return res.data;
-                } else {
-                    return false;
-                }
-            });
+    async requestEmailDuplicationCheckToDjango(context: ActionContext<any, any>, email: string): Promise<boolean> {
+        try {
+            const response = await axiosInst.djangoAxiosInst.post('/account/check-email-duplication', { email });
+            if (response.data.isDuplicate) {
+                return true
+            }
+            return false
+        } catch (error) {
+            console.error('Email duplication check failed:', error);
+            throw error;
+        }
     },
 
     async requestCheckNicknameToDjango(context: ActionContext<any, any>, payload) {
@@ -94,10 +48,10 @@ const actions: AccountActions = {
                 .then((res) => {
                     if (res.data) {
                         alert('사용 가능한 닉네임입니다!');
-                        return true;
+                        return false;
                     } else {
                         alert('중복된 닉네임입니다!');
-                        return false;
+                        return true;
                     }
                 });
         } else {
@@ -105,6 +59,15 @@ const actions: AccountActions = {
             return false;
         }
     },
+
+    async requestNewAccountToDjango({ commit }: ActionContext<any, any>, userData: { email: string; nickname: string }): Promise<void> {
+        try {
+            await axiosInst.djangoAxiosInst.post('/account/register/', userData);
+        } catch (error) {
+            console.error('Failed to create new account:', error);
+            throw error;
+        }
+    }
 
 };
 

@@ -7,18 +7,18 @@
         </v-btn>
         <v-spacer></v-spacer>
 
-        <v-menu>
-            <template v-slot:activator="{ props }">
-                <v-btn color="white" v-bind="props">
-                    <b>Activator Slot</b>
-                </v-btn>
-            </template>
-            <v-list>
-                <v-list-item v-for="(item, index) in items" :key="index" :value="index" @click="item.action">
-                    <v-list-item-title>{{ item.title }}</v-list-item-title>
-                </v-list-item>
-            </v-list>
-        </v-menu>
+<!--        <v-menu>-->
+<!--            <template v-slot:activator="{ props }">-->
+<!--                <v-btn color="white" v-bind="props">-->
+<!--                    <b>Activator Slot</b>-->
+<!--                </v-btn>-->
+<!--            </template>-->
+<!--            <v-list>-->
+<!--                <v-list-item v-for="(item, index) in items" :key="index" :value="index" @click="item.action">-->
+<!--                    <v-list-item-title>{{ item.title }}</v-list-item-title>-->
+<!--                </v-list-item>-->
+<!--            </v-list>-->
+<!--        </v-menu>-->
 
         <v-btn text @click="callProductPage" class="btn-text">
             <v-icon left>mdi-store</v-icon>
@@ -53,14 +53,14 @@ export default {
     data() {
         return {
             navigation_drawer: false,
-            links: [{ icon: 'mdi-home', text: 'Home', route: '/' }],
+            // links: [{ icon: 'mdi-home', text: 'Home', route: '/' }],
             userToken: null,
             isLogin: false,
-            items: [
-                { title: 'Profile', action: this.goToHome },
-                { title: 'Settings', action: this.goToHome },
-                { title: 'Sign out', action: this.signOut }
-            ],
+            // items: [
+            //     { title: 'Profile', action: this.goToHome },
+            //     { title: 'Settings', action: this.goToHome },
+            //     { title: 'Sign out', action: this.signOut }
+            // ],
         };
     },
     methods: {
@@ -77,7 +77,7 @@ export default {
             router.push('/account/login');
         },
         signOut() {
-            localStorage.removeItem("userToken");
+            localStorage.removeItem("accessToken");
             this.isLogin = false;
             router.push('/');
         },
@@ -86,7 +86,7 @@ export default {
         },
     },
     mounted() {
-        this.userToken = localStorage.getItem("userToken");
+        this.userToken = localStorage.getItem("accessToken");
         this.isLogin = !!this.userToken;
     }
 };

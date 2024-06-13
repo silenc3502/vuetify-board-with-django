@@ -28,14 +28,16 @@ export default {
             await this.getAccessTokenFromDjangoRedirection({ code });
             const userInfo = await this.requestUserInfoToDjango();
             const email = userInfo.kakao_account.email;
+            console.log('email:', email)
 
             // 사용자 email 정보가 있는지 확인
             const isEmailDuplication = await this.requestEmailDuplicationCheckToDjango(email)
-            if (isEmailDuplication) {
+            console.log('isEmailDuplication:', isEmailDuplication)
+            if (isEmailDuplication === true) {
                 this.$router.push('/');
+            } else {
+                this.$router.push('/account/register')
             }
-
-            this.$router.push('/account/register')
         },
         // async getUserInfo() {
         //     await this.requestUserInfoToDjango()

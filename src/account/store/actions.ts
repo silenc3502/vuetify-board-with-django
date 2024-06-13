@@ -26,11 +26,9 @@ const actions: AccountActions = {
 
     async requestEmailDuplicationCheckToDjango(context: ActionContext<any, any>, email: string): Promise<boolean> {
         try {
+            console.log('requestEmailDuplicationCheckToDjango -> email:', email)
             const response = await axiosInst.djangoAxiosInst.post('/account/check-email-duplication', { email });
-            if (response.data.isDuplicate) {
-                return true
-            }
-            return false
+            return response.data.isDuplicate;
         } catch (error) {
             console.error('Email duplication check failed:', error);
             throw error;

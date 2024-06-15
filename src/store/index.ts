@@ -3,6 +3,7 @@ import boardModule from "@/board/store/boardModule";
 import productModule from "@/product/store/productModule";
 import accountModule from "@/account/store/accountModule";
 import authenticationModule from "@/authentication/store/authenticationModule";
+import postModule from "@/post/store/postModule";
 
 export default createStore({
   state: {
@@ -18,5 +19,6 @@ export default createStore({
     productModule,
     accountModule,
     authenticationModule,
+    postModule,
   },
 })

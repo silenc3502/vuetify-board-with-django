@@ -28,6 +28,10 @@
             <v-icon left>mdi-forum</v-icon>
             <span>자유 게시판</span>
         </v-btn>
+        <v-btn text @click="callFastapiPostPage" class="btn-text">
+            <v-icon left>mdi-forum</v-icon>
+            <span>포스팅</span>
+        </v-btn>
         <v-btn v-if="isLogin" text @click="myPage" class="btn-text">
             <v-icon left>mdi-account-circle</v-icon>
             <span>마이 페이지</span>
@@ -80,6 +84,9 @@ export default {
             localStorage.removeItem("accessToken");
             this.isLogin = false;
             router.push('/');
+        },
+        callFastapiPostPage () {
+            router.push('/post/list')
         },
         goToHome() {
             router.push('/');

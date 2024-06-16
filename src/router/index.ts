@@ -6,6 +6,7 @@ import AccountRoutes from "@/account/router/AccountRoutes";
 import AuthRoutes from "@/authentication/router/AuthRoutes";
 import PostRoutes from "@/post/router/PostRoutes";
 import LogisticRegressionRoutes from "@/logicsticRegression/router/LogisticRegressionRoutes";
+import PolynomialRegressionRoutes from "@/polynomialRegression/router/PolynomialRegressionRoutes";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -19,6 +20,7 @@ const routes: Array<RouteRecordRaw> = [
   ...AuthRoutes,
   ...PostRoutes,
   ...LogisticRegressionRoutes,
+  ...PolynomialRegressionRoutes,
 ]
 
 const router = createRouter({

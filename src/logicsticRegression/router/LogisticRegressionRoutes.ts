@@ -1,4 +1,5 @@
 import LogisticRegressionResultPage from "@/logicsticRegression/pages/LogisticRegressionResultPage.vue";
+import ConfusionMatrixPage from "@/logicsticRegression/pages/ConfusionMatrixPage.vue";
 
 const BoardRoutes = [
     {
@@ -6,6 +7,11 @@ const BoardRoutes = [
         name: 'LogisticRegressionResultPage',
         component: LogisticRegressionResultPage
     },
+    {
+        path: '/confusion-matrix',
+        name: 'ConfusionMatrixPage',
+        component: ConfusionMatrixPage
+    }
 ]
 
 export default BoardRoutes

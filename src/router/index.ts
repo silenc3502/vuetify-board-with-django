@@ -9,6 +9,7 @@ import LogisticRegressionRoutes from "@/logicsticRegression/router/LogisticRegre
 import PolynomialRegressionRoutes from "@/polynomialRegression/router/PolynomialRegressionRoutes";
 import ExponentialRegressionRoutes from "@/exponentialRegression/router/ExponentialRegressionRoutes";
 import RandomForestRoutes from "@/random_forest/router/RandomForestRoutes";
+import PCATestRoutes from "@/pca/router/PCATestRoutes";
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -24,7 +25,8 @@ const routes: Array<RouteRecordRaw> = [
   ...LogisticRegressionRoutes,
   ...PolynomialRegressionRoutes,
   ...ExponentialRegressionRoutes,
-  ...RandomForestRoutes
+  ...RandomForestRoutes,
+  ...PCATestRoutes,
 ]
 
 const router = createRouter({
